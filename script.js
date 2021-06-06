@@ -107,7 +107,7 @@ form.addEventListener("submit", (event) => {
     // const formData = new FormData();
     formData.append("subredditInput", subredditInput.value)
     getSubredditData(formData.get('subredditInput'));
-    
+    console.log(formData.get('subredditInput'));
     // for incrementing card set on screen to next ten in array
     incrementDisplay = subredditInput.value
     console.log(incrementDisplay);
