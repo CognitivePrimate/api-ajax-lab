@@ -30,6 +30,12 @@ button {
 
 }
 
+.next-ten {
+    width: 305.99px;
+    margin-top: 3px;
+    cursor: pointer;
+}
+
 a {
     text-decoration: none;
 }
@@ -66,18 +72,29 @@ section {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    flex-wrap: wrap;
+    overflow: hidden;
     align-items: center;
     background: rgb(48, 48, 48);
     margin: 4px;
-    height: 400px;
+    min-height:200px;
     width: 300px;
     border-radius: 5px;
     box-shadow: 11px 5px 29px -10px #000000;
-    padding: 0 3px;
+    padding: 3px;
+
 
 }
 
 .card-title {
     font-size: 1.2rem;
     text-align: center;
+    flex-wrap: wrap;
+}
+
+@media only screen and (min-width: 768px){
+    section {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
 }

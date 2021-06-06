@@ -18,101 +18,116 @@ function cardGenerator(post){
     card.appendChild(cardTitle);
 
     // create card image and insert into card if image exists
-    if (post.data.thumbnail){
+    if (post.data.thumbnail.includes("https:")){
         const cardImage = document.createElement("img");
         cardImage.setAttribute("class", "card-image");
         cardImage.setAttribute("alt", "broken image");
         cardImage.src = post.data.thumbnail;
-        card.appendChild(cardImage); 
+        card.appendChild(cardImage);
+        card.style["height"] = "375px"; 
     }
         
-
-    // create link to OP on card bottom
+    // create link to OP on card bottom that opens in new tab
     const cardLink = document.createElement("a");
     cardLink.setAttribute("href", "https:reddit.com" + post.data.permalink);
+    cardLink.setAttribute("target", "blank");
     cardLink.innerText = "View Original Post";
     card.appendChild(cardLink);
 
-
     // insert entire card onto screen
     postCardEl.appendChild(card);
-    // for each in return array but only up to ten. on function call, increment next ten
-    // count += 10;
-    // console.log(count);
-
+    
+    // for controlling number of cards displayed && incrementing to next iteration
+    count++
 }
 
 // loading function
 function loading(){
-    const loadingEl = document.createElement("p");
     loadingEl.setAttribute("class", "loading")
     loadingEl.innerText = "Patience, grasshopper...";
     document.body.appendChild(loadingEl);
 }
 
-// VARIABLES
-let count = 0;
+// loadED function
+const loaded = () => loadingEl.innerText = "";
 
-// CAPTURE HTML ELEMENTS
-const postCardEl = document.querySelector(".post-card");
-const form = document.querySelector("form");
-let subredditInput = document.querySelector("#reddit-input");
-// delete below if not used. is this necessary?
-let subredditInputValue = subredditInput.value;
-
-// delete below if not used
-let button = document.querySelector("button");
-
-
-
-
-
-// get data from diff subredit
+// get data from diff subredit && calls function to display on screen
 function getSubredditData(subredditInput){
     fetch(`https://www.reddit.com/r/${subredditInput}/.json`).then((response) => {
         // whilst loading
         loading();
         return response.json();
     }).then((responseData) => {
+        loaded();
         const redditPosts = responseData.data.children;
-        redditPosts.forEach((post) => {
-            cardGenerator(post);
-        });
         console.log(redditPosts);
+        
+        // to display only ten at a time on screen
+        while (internalCount < 10) {
+            cardGenerator(redditPosts[count]);
+            internalCount++;
+        };
+        
+        console.log(subredditInput);
+        incrementDisplay = subredditInput;
     });
 }
-// getSubredditData(subredditInput = "aww");
-getSubredditData(subredditInput);
+
+// VARIABLES
+let count = 0;
+let internalCount = 0;
+const formData = new FormData();
+let incrementDisplay = "";
+
+
+// capture HTML elements
+const postCardEl = document.querySelector(".post-card");
+const form = document.querySelector("form");
+let subredditInput = document.querySelector("#reddit-input");
+const loadingEl = document.createElement("p");
+let nextTenButton = document.querySelector(".next-ten");
+
+
+
+
+
+// initial function call to default to build spec
+getSubredditData("aww");
 
 // get input data from user to generate new subreddit display
 form.addEventListener("submit", (event) => {
     event.preventDefault();
-    const formData = new FormData();
-    getSubredditData(formData.get(subredditInput.value));
+    
+    //resets counts for proper page display 
+    internalCount = 0;
+    count = 0;
 
-    // getSubredditData(subredditInput);
-    console.log(subredditInput.value);
+    //resets page instead of adding onto end each time
+    postCardEl.innerHTML = null; 
+    // const formData = new FormData();
+    formData.append("subredditInput", subredditInput.value)
+    getSubredditData(formData.get('subredditInput'));
+    
+    // for incrementing card set on screen to next ten in array
+    incrementDisplay = subredditInput.value
+    console.log(incrementDisplay);
+})
+
+nextTenButton.addEventListener("click", (event) => {
+    event.preventDefault();
+    loading();
+    console.log(count);
+    //resets counts & card section for proper page display 
+    internalCount = 0;
+    postCardEl.innerHTML = null; 
+
+    getSubredditData(incrementDisplay);
+    loaded();
+    // if (count >= redditPosts.length){
+    //     ;
+    // }
 })
 
 
 
-// fetch("https://www.reddit.com/r/aww/.json").then((response) => {
-//     // for loading
-//     loading();
-//     // returning the response in json format 
-//     return response.json();
-// }).then((responseData) => {
-//     const redditPosts = responseData.data.children;
-//     redditPosts.forEach((post) => {
-//         cardGenerator(post);
-//         // possibly put the children[10]
-//     });
-//     // making cards per array item up to ten @ time 
-    
-//     // for (let internalCount = 0; internalCount < 10; internalCount++){
-//     //     redditPosts[count].data.forEach(cardGenerator());
-//     // }
-
-
-// });
 
