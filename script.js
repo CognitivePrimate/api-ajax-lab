@@ -1,7 +1,3 @@
-// NOTES: make empty card and clone entire node on command? or: create html elements on command
-// for ten at time -- set count to ten, increment by ten on forEach (would for loop be better??) loop for item display? use slice to control array listing visibility & internalCount to stop each ten?
-// CHILDREN is the ARRAY
-
 
 // FUNCTIONS
 
@@ -70,6 +66,8 @@ function getSubredditData(subredditInput){
         
         console.log(subredditInput);
         incrementDisplay = subredditInput;
+        console.log(subredditInput);
+        
     });
 }
 
@@ -111,6 +109,8 @@ form.addEventListener("submit", (event) => {
     // for incrementing card set on screen to next ten in array
     incrementDisplay = subredditInput.value
     console.log(incrementDisplay);
+    formData.append("subredditInput", null);
+    // why the fuck doesn't that work?!
 })
 
 nextTenButton.addEventListener("click", (event) => {
