@@ -1,7 +1,6 @@
-
 // FUNCTIONS
 
-// post card generation function
+//card generation function
 function cardGenerator(post){
     // generate all card elements -- div, title, image, and link to OP
     const card = document.createElement("div");
@@ -32,9 +31,7 @@ function cardGenerator(post){
 
     // insert entire card onto screen
     postCardEl.appendChild(card);
-    
-    // for controlling number of cards displayed && incrementing to next iteration
-    count++
+
 }
 
 // loading function
@@ -56,17 +53,25 @@ function getSubredditData(subredditInput){
     }).then((responseData) => {
         loaded();
         const redditPosts = responseData.data.children;
-        console.log(redditPosts);
         
         // to display only ten at a time on screen
         while (internalCount < 10) {
+
+            // to prevent error being thrown on nextTen button click if there aren't enough posts to populate 10 cards
+            if (count >= redditPosts.length){
+                alert("End of the line, buckaroo.");
+                break;
+            };
+
             cardGenerator(redditPosts[count]);
             internalCount++;
+            count++
         };
         
         console.log(subredditInput);
         incrementDisplay = subredditInput;
-        console.log(subredditInput);
+        console.log(redditPosts.length);
+        console.log(count);
         
     });
 }
@@ -77,17 +82,12 @@ let internalCount = 0;
 const formData = new FormData();
 let incrementDisplay = "";
 
-
 // capture HTML elements
 const postCardEl = document.querySelector(".post-card");
 const form = document.querySelector("form");
 let subredditInput = document.querySelector("#reddit-input");
 const loadingEl = document.createElement("p");
 let nextTenButton = document.querySelector(".next-ten");
-
-
-
-
 
 // initial function call to default to build spec
 getSubredditData("aww");
@@ -102,30 +102,26 @@ form.addEventListener("submit", (event) => {
 
     //resets page instead of adding onto end each time
     postCardEl.innerHTML = null; 
-    // const formData = new FormData();
+    const formData = new FormData();
     formData.append("subredditInput", subredditInput.value)
     getSubredditData(formData.get('subredditInput'));
-    console.log(formData.get('subredditInput'));
+
     // for incrementing card set on screen to next ten in array
     incrementDisplay = subredditInput.value
-    console.log(incrementDisplay);
-    formData.append("subredditInput", null);
-    // why the fuck doesn't that work?!
+    
 })
 
 nextTenButton.addEventListener("click", (event) => {
     event.preventDefault();
     loading();
-    console.log(count);
+
     //resets counts & card section for proper page display 
     internalCount = 0;
     postCardEl.innerHTML = null; 
 
     getSubredditData(incrementDisplay);
     loaded();
-    // if (count >= redditPosts.length){
-    //     ;
-    // }
+
 })
 
 
